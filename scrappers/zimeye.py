@@ -5,7 +5,7 @@ from .summarize import summarize_text
 # nltk.download('punkt')
 
 BASE_URL = "https://www.zimeye.net/category/national/"
-TARGET_DATE = "11 August, 2025"
+TARGET_DATE = "13 August, 2025"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36"
 }

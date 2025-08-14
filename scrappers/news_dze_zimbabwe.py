@@ -1,46 +1,69 @@
 import requests
 from bs4 import BeautifulSoup
+from .summarize import summarize_text  # import reusable function
 
-base_url = 'https://www.newsdzezimbabwe.co.uk/'
-target_date = "Monday, August 11, 2025"
-response = requests.get(base_url)
-soup = BeautifulSoup(response.text, 'html.parser')
-filtered_entries = []
+BASE_URL = 'https://www.newsdzezimbabwe.co.uk/'
+TARGET_DATE = "Wednesday, August 13, 2025"
+HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
+}
 
-entries = soup.find_all(class_='hentry')
+def get_filtered_posts():
+    """Fetch entries on the target date."""
+    resp = requests.get(BASE_URL, headers=HEADERS)
+    soup = BeautifulSoup(resp.text, 'html.parser')
+    entries = soup.find_all(class_='hentry')
 
-for entry in entries:
-    date_tag = entry.find(class_='meta_date')
-    if date_tag and date_tag.get_text(strip=True) == target_date:
-        filtered_entries.append(entry)
+    filtered = []
+    for entry in entries:
+        date_tag = entry.find(class_='meta_date')
+        if date_tag and date_tag.get_text(strip=True) == TARGET_DATE:
+            a_tag = entry.select_one('.entry-title a')
+            if a_tag and a_tag.get('href'):
+                url = a_tag['href']
+                if not url.startswith('http'):
+                    url = BASE_URL.rstrip('/') + '/' + url.lstrip('/')
+                filtered.append(url)
+    return list(set(filtered))  # deduplicate
 
-for i, entry in enumerate(filtered_entries, 1):
-    a_tag = entry.select_one('.entry-title a')
-    if not a_tag or 'href' not in a_tag.attrs:
-        print(f"Entry {i} has no valid link, skipping...")
-        continue
+def get_article_data(url):
+    """Fetch heading and summary for an article URL."""
+    resp = requests.get(url, headers=HEADERS)
+    soup = BeautifulSoup(resp.text, 'html.parser')
 
-    article_url = a_tag['href']
-    if not article_url.startswith('http'):
-        article_url = base_url.rstrip('/') + '/' + article_url.lstrip('/')
-
-    article_resp = requests.get(article_url)
-    article_soup = BeautifulSoup(article_resp.text, 'html.parser')
-
-    # Extract heading text from article page
-    heading_tag = article_soup.select_one('.hentry .entry-title a')
+    heading_tag = soup.select_one('.hentry .entry-title a')
     if heading_tag:
         heading = heading_tag.get_text(strip=True)
     else:
-        # fallback: just .entry-title text if no <a> inside
-        heading_tag = article_soup.select_one('.hentry .entry-title')
+        heading_tag = soup.select_one('.hentry .entry-title')
         heading = heading_tag.get_text(strip=True) if heading_tag else "No heading found"
 
-    # Extract content text
-    content_tag = article_soup.select_one('.hentry .entry-content')
+    content_tag = soup.select_one('.hentry .entry-content')
     content = content_tag.get_text(separator=' ', strip=True) if content_tag else "No content found"
 
-    print(f"Article {i}:")
-    print(f"URL: {article_url}")
-    print(f"Heading: {heading}")
-    print(f"Content:\n{content}\n{'-'*40}\n")
+    summary = summarize_text(content, ratio=0.3) if len(content.split()) > 50 else content
+
+    return {
+        "url": url,
+        "title": heading,
+        "summary": summary
+    }
+
+def get_articles():
+    """Main function to get all articles for the target date."""
+    print(f"Starting to get NewsDzeZimbabwe articles for {TARGET_DATE}")
+    links = get_filtered_posts()
+
+    articles = []
+    for link in links:
+        article_data = get_article_data(link)
+        articles.append(article_data)
+
+    print(f"Done getting {len(articles)} articles from NewsDzeZimbabwe")
+    return articles
+
+# Example usage
+if __name__ == "__main__":
+    articles = get_articles()
+    for i, art in enumerate(articles, 1):
+        print(f"{i}. {art['heading']} - {art['summary']}\n")

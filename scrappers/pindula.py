@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from .summarize import summarize_text  # import reusable function
 
 BASE_URL = 'https://news.pindula.co.zw/'
-TARGET_DATE_PATH = '/2025/08/12/'
+TARGET_DATE_PATH = '/2025/08/13/'
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
 }
@@ -35,7 +35,7 @@ def get_articles():
 
         articles.append({
             'url': link,
-            'header': header,
+            'title': header,
             'author': author,
             # 'content': content,
             'summary': summary

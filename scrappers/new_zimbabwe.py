@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+from .summarize import summarize_text  # Import reusable function
 
 BASE_URL = "https://www.newzimbabwe.com/category/news/"
 TARGET_DATE = "11th August 2025"
@@ -8,42 +9,56 @@ HEADERS = {
 }
 
 def get_filtered_posts():
+    """Fetches post links from the news category filtered by target date."""
     resp = requests.get(BASE_URL, headers=HEADERS)
     soup = BeautifulSoup(resp.text, "html.parser")
     posts = soup.select(".post-grid-content")
 
-    filtered = []
+    filtered_links = set()
     for post in posts:
         footer = post.select_one(".post-grid-content-footer")
         if footer and TARGET_DATE in footer.get_text(strip=True):
             link_tag = post.find("a", href=True)
             if link_tag:
-                filtered.append(link_tag["href"])
-    return list(set(filtered))  # Remove duplicates
+                filtered_links.add(link_tag["href"])
+
+    return list(filtered_links)
 
 def get_article_data(url):
+    """Fetches title, body, and summary from an article URL."""
     resp = requests.get(url, headers=HEADERS)
     soup = BeautifulSoup(resp.text, "html.parser")
 
     title_tag = soup.select_one(".post-title")
     body_tag = soup.select_one(".post-body")
 
-    title = title_tag.get_text(strip=True) if title_tag else None
-    body = body_tag.get_text(separator="\n", strip=True) if body_tag else None
+    title = title_tag.get_text(strip=True) if title_tag else "No title found"
+    body = body_tag.get_text(separator=" ", strip=True) if body_tag else "No content found"
+
+    # Summarize if long enough
+    summary = summarize_text(body, ratio=0.3) if len(body.split()) > 50 else body
 
     return {
         "url": url,
         "title": title,
-        "body": body
+        "summary": summary
     }
 
-if __name__ == "__main__":
+def get_articles():
+    """Main function to get all articles from target date."""
+    print(f"Starting to get NewZimbabwe articles for {TARGET_DATE}")
     links = get_filtered_posts()
-    print(f"Found {len(links)} posts from {TARGET_DATE}\n")
 
+    articles = []
     for link in links:
-        article = get_article_data(link)
-        print(f"Title: {article['title']}")
-        print(f"URL: {article['url']}")
-        print(f"Body: {article['body'][:300]}...")  # Preview first 300 chars
-        print("-" * 80)
+        article_data = get_article_data(link)
+        articles.append(article_data)
+
+    print(f"Done getting {len(articles)} articles from NewZimbabwe")
+    return articles
+
+# Example usage
+if __name__ == "__main__":
+    articles = get_articles()
+    for i, art in enumerate(articles, 1):
+        print(f"{i}. {art['title']} - {art['summary']}")

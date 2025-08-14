@@ -1,25 +1,3 @@
-# from ollama import Client
-
-# client = Client(host="http://localhost:11434")  
-
-# prompt =""
-
-
-# response = client.chat(
-#     model="llama3.2:latest",
-#     messages=[
-#         {"role": "user", "content": prompt}
-#     ],
-# )
-
-# # The model output
-# print(response)
-
-
-
-# combined_scraper.py
-# categorizer.py
-
 import json
 from ollama import Client
 

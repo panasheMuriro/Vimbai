@@ -27,3 +27,17 @@ def summarize_text(text: str, ratio: float = 0.3) -> str:
     summary_count = max(1, int(total_sentences * ratio))
     summary_sentences = summarizer(parser.document, summary_count)
     return " ".join(str(sentence) for sentence in summary_sentences)
+
+
+def summarize_text_for_gemini_input(text: str, sentence_count: int = 2) -> str:
+    """Summarize text to a few sentences using Sumy LSA."""
+    parser = PlaintextParser.from_string(text, Tokenizer("english"))
+    summarizer = LsaSummarizer()
+
+    total_sentences = len(parser.document.sentences)
+    if total_sentences == 0:
+        return text
+
+    summary_count = min(sentence_count, total_sentences)
+    summary_sentences = summarizer(parser.document, summary_count)
+    return " ".join(str(sentence) for sentence in summary_sentences)
