@@ -42,7 +42,7 @@ def create_and_save_blogs():
         blogs_doc[category] = blog_md
 
     # Save to Firestore: blogs/{today_str}
-    db.collection("blogs").document(today_str).set(blogs_doc)
+    db.collection("blogs_test").document(today_str).set(blogs_doc)
     print(f"✅ Blogs saved to Firestore at blogs/{today_str}")
 
 if __name__ == "__main__":

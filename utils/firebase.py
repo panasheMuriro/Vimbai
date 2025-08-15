@@ -21,13 +21,13 @@ def post_to_firestore(data):
     today_str = datetime.now().strftime("%Y-%m-%d")
     
     # Save to Firestore: categorized_articles/{today_str}
-    db.collection("categorized_articles").document(today_str).set(data)
+    db.collection("categorized_articles_test").document(today_str).set(data)
     print(f"✅ Data posted to Firestore at categorized_articles/{today_str}")
     
     
 def get_categories_for_today():
     today_str = datetime.now().strftime("%Y-%m-%d")
-    doc = db.collection("categorized_articles").document(today_str).get()
+    doc = db.collection("categorized_articles_test").document(today_str).get()
     if doc.exists:
         return doc.to_dict()  # returns categories + data
     else:
