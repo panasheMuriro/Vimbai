@@ -1,9 +1,11 @@
 import requests
 from bs4 import BeautifulSoup
 from .summarize import summarize_text  # import reusable function
+from utils.get_yesterday_date import get_yesterday_date
 
+previous_date = get_yesterday_date('pindula')
 BASE_URL = 'https://news.pindula.co.zw/'
-TARGET_DATE_PATH = '/2025/08/13/'
+TARGET_DATE_PATH = previous_date
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
 }
@@ -16,7 +18,7 @@ def get_articles():
     unique_links = set(href.get('href', '') for href in links if TARGET_DATE_PATH in href.get('href', ''))
 
     articles = []
-    print("Starting to get Pindula articles")
+    print("Starting to get Pindula articles for ", previous_date)
     for link in unique_links:
         article_resp = requests.get(link, headers=HEADERS)
         article_soup = BeautifulSoup(article_resp.text, 'html.parser')

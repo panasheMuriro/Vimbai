@@ -29,7 +29,6 @@ def run_all_scrapers():
     newsdze_articles = get_articles_newsdze()
     all_articles.extend(newsdze_articles)
 
-    print(f"Total articles fetched: {len(all_articles)}")
     return all_articles
 
 if __name__ == "__main__":

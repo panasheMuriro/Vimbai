@@ -1,0 +1,8 @@
+google
+firebase_admin
+bs4
+requests
+sumy
+beautifulsoup4
+json5
+json

@@ -2,8 +2,12 @@ import requests
 from bs4 import BeautifulSoup
 from .summarize import summarize_text  # import reusable function
 
+from utils.get_yesterday_date import get_yesterday_date
+
+previous_date = get_yesterday_date('news_dze_zimbabwe')
+
 BASE_URL = 'https://www.newsdzezimbabwe.co.uk/'
-TARGET_DATE = "Wednesday, August 13, 2025"
+TARGET_DATE = previous_date
 HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
 }
