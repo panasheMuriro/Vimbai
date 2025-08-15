@@ -3,7 +3,7 @@ from google import genai
 from datetime import datetime
 import os
 
-os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY", "")
+os.environ["GEMINI_API_KEY"] = os.getenv("GEMINI_API_KEY", "")
 
 def generate_blog(category, articles):
     

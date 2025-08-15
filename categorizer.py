@@ -13,7 +13,7 @@ import os
 import re
 import json5
 
-os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY", "")
+os.environ["GEMINI_API_KEY"] = os.getenv("GEMINI_API_KEY", "")
 
 
 def summarize_text(text: str, sentence_count: int = 2) -> str:
