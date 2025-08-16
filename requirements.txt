@@ -6,3 +6,4 @@ requests
 sumy
 beautifulsoup4
 json5
+numpy
