@@ -2,6 +2,7 @@
 
 Vimbai is a full-stack news aggregation and blogging app focused on Zimbabwean local news. The app scrapes multiple news sources, summarizes articles, categorizes them with AI, and generates Gen Z-style blog posts with emojis and hashtags. The frontend is built with **React + Vite**, and the backend uses **Python, Firebase, and Gemini Flash Lite API**.
 
+
 ---
 
 ## Table of Contents
