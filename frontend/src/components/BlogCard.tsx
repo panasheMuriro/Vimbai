@@ -59,10 +59,10 @@ export default function BlogCard({
           )}
         </p>
         {isTooLong && (
-          <div className="mt-2">
+          <div className="mt-2 text-center">
             <button
               onClick={() => setExpanded(!expanded)}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-white text-sm bg-black px-4 py-2 rounded-full"
             >
               {expanded ? "Show Less" : "See More"}
             </button>
