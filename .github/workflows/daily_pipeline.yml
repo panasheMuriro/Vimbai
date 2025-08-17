@@ -1,0 +1,44 @@
+name: Daily Article Categorization & Blogging
+
+on:
+  schedule:
+    - cron: "0 6 * * *"  # 6 AM UTC
+  workflow_dispatch:
+
+jobs:
+  run_pipeline:
+    runs-on: ubuntu-latest
+
+    env:
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r backend/requirements.txt
+
+      - name: Install NLTK data
+        run: |
+          python -m nltk.downloader punkt
+          python -m nltk.downloader punkt_tab
+
+      - name: Write Firebase service account to file
+        run: |
+          mkdir -p backend/utils
+          echo "$FIREBASE_SERVICE_ACCOUNT_JSON" > backend/utils/firebase-service-account.json
+
+      - name: Run Gemini Categorizer
+        run: python backend/categorizer.py
+
+      - name: Generate Blogs
+        run: python backend/blogger.py
