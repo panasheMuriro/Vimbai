@@ -10,7 +10,7 @@ import os
 
 SERVICE_ACCOUNT_PATH = os.getenv(
     "FIREBASE_SERVICE_ACCOUNT", 
-    "./utils/firebase-service-account.json"
+    "backend/utils/firebase-service-account.json"
 )
 cred = credentials.Certificate(SERVICE_ACCOUNT_PATH)
 firebase_admin.initialize_app(cred)
