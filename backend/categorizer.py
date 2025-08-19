@@ -46,11 +46,11 @@ def categorize_articles():
     """Categorize articles using Gemini Flash Lite with 2-sentence summaries."""
     print("Fetching articles from all sources...")
     all_articles = (
-        get_zimeye_articles() +
-        get_pindula_articles() +
-        get_newzimbabwe_articles() +
-        get_newsday_articles() +
-        get_newsdze_articles()
+        # get_zimeye_articles() +
+        get_pindula_articles()
+        # get_newzimbabwe_articles() +
+        # get_newsday_articles() +
+        # get_newsdze_articles()
     )
     print(f"Total articles fetched: {len(all_articles)}")
 
@@ -65,7 +65,7 @@ def categorize_articles():
 
     prompt = f"""
 You are an AI assistant. I have a list of articles with their titles and very short summaries. 
-Please categorize these articles into **6 meaningful groups**. 
+Please categorize these articles into **3 meaningful groups**. 
 Return the output in JSON format with keys as category names and values as lists of article titles.
 
 Articles:
